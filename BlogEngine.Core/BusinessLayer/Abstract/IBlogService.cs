@@ -9,9 +9,9 @@ namespace BusinessLayer.Abstract
 {
     internal interface IBlogService
     {
-        void AddCategory(Blog blog);
-        void DeleteCategory(Blog blog);
-        void UpdateCategory(Blog blog);
+        void Add(Blog blog);
+        void Delete(Blog blog);
+        void Update(Blog blog);
         List<Blog> GetList();
         Blog GetById(int id);
         List<Blog> GetBlogListWithCategory();
