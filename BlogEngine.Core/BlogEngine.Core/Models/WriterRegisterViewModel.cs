@@ -1,7 +1,7 @@
 ﻿using BusinessLayer.Abstract;
 using EntityLayer.Concrete;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.ComponentModel.DataAnnotations;
+using FluentValidation;
 
 namespace BlogEngine.Core.Models
 {
