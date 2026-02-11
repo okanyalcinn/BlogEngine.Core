@@ -1,5 +1,6 @@
 ﻿using BusinessLayer.Concrete;
 using DataAccessLayer.EntityFramework;
+using EntityLayer.Concrete;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlogEngine.Core.Controllers
@@ -12,14 +13,29 @@ namespace BlogEngine.Core.Controllers
             return View();
         }
 
+        [HttpGet]
         public PartialViewResult PartialAddComment()
         {
+            return PartialView();
+        }
+
+        [HttpPost]
+        public PartialViewResult PartialAddComment(Comment p)
+        {
+            p.CommentDate= DateTime.Parse(DateTime.Now.ToShortDateString());
+            p.CommentStatus = true;
+            p.BlogID = 7;
+            cm.Add(p);
             return PartialView();
         }
         public PartialViewResult PartialCommentListByBlog(int id) 
         {
             var values = cm.GetList(id);
             return PartialView(values);
+        }
+        public IActionResult CommentListByBlogVC(int id)
+        {
+            return ViewComponent("CommentListByBlog", new { id = id });
         }
     }
 }

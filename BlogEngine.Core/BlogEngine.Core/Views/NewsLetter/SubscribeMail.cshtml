@@ -1,0 +1,51 @@
+﻿<script src="~/lib/jquery/dist/jquery.js"></script>
+
+<script src="~/js/sweetalert2@11.js"></script>
+
+
+<div class="tech-btm">
+    <p>Blog yazılarımız hakkında bilgi alın. </p>
+    @* ajax post yapılacak *@
+    <form id="NewsLetterForm" action="/NewsLetter/SubscribeMail" method="post">
+        <input type="email" placeholder="Email" required="" name="Mail">
+        <input type="submit" value="Abone Ol">
+    </form>
+
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        $("#NewsLetterForm").submit(function (e) {
+            e.preventDefault(); // formun normal submit olmasını engeller
+
+            $.ajax({
+                url: '/NewsLetter/SubscribeMail/',
+                type: 'POST',
+                data: $(this).serialize(), // formdaki tüm alanları al
+                success: function (response) {
+                    Swal.fire({
+                      position: "top-end",
+                      icon: "success",
+                      title: "Mail bültenine kayıt oldunuz",
+                      showConfirmButton: false,
+                      timer: 1500
+                    });
+
+                    $("#NewsLetterForm")[0].reset();// formu temizle
+                },
+                error: function () {
+                    Swal.fire({
+                      position: "top-end",
+                      icon: "error",
+                      title: "Bir hata oluştu",
+                      showConfirmButton: false,
+                      timer: 1500
+                    });
+                }
+            });
+
+        });
+
+    });
+</script>

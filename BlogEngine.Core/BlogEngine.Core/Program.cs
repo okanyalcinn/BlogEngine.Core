@@ -1,5 +1,8 @@
 using EntityLayer.Concrete;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
+using NuGet.Protocol;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,9 +14,22 @@ builder.Services.AddControllersWithViews()
         fv.DisableDataAnnotationsValidation = true;
     });
 
+builder.Services.AddSession();
+
+builder.Services.AddMvc(config =>
+{
+    var policy = new AuthorizationPolicyBuilder()
+                .RequireAuthenticatedUser()
+                .Build();
+
+    config.Filters.Add(new AuthorizeFilter(policy));
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -21,8 +37,13 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+//app.UseStatusCodePages();
+app.UseStatusCodePagesWithReExecute("/ErrorPage/Error1", "?code={0}");
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+app.UseSession();
 
 app.UseRouting();
 
