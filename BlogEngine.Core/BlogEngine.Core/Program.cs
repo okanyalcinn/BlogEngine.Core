@@ -1,5 +1,6 @@
 using EntityLayer.Concrete;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using NuGet.Protocol;
@@ -14,8 +15,6 @@ builder.Services.AddControllersWithViews()
         fv.DisableDataAnnotationsValidation = true;
     });
 
-builder.Services.AddSession();
-
 builder.Services.AddMvc(config =>
 {
     var policy = new AuthorizationPolicyBuilder()
@@ -24,6 +23,16 @@ builder.Services.AddMvc(config =>
 
     config.Filters.Add(new AuthorizeFilter(policy));
 });
+
+builder.Services.AddMvc();
+
+builder.Services.AddAuthentication(
+    CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(x =>
+    {
+        x.LoginPath = "/Login/Index";
+    });
+
 
 var app = builder.Build();
 
@@ -43,7 +52,8 @@ app.UseStatusCodePagesWithReExecute("/ErrorPage/Error1", "?code={0}");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
-app.UseSession();
+app.UseAuthentication();
+
 
 app.UseRouting();
 
