@@ -1,7 +1,11 @@
 ﻿using BusinessLayer.Concrete;
+using BusinessLayer.ValidationRules;
 using DataAccessLayer.EntityFramework;
+using EntityLayer.Concrete;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualBasic;
 
 namespace BlogEngine.Core.Controllers
 {
@@ -20,6 +24,41 @@ namespace BlogEngine.Core.Controllers
             ViewBag.Id = id;
             var values = bm.GetBlogById(id);
             return View(values);
+        }
+
+        public IActionResult BlogListByWriter()
+        {
+            var values = bm.GetBlogListByWriter(1);
+            return View(values);
+        }
+
+        [HttpGet]
+        public IActionResult BlogAdd()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult BlogAdd(Blog p)
+        {
+            BlogValidator bv = new BlogValidator();
+            ValidationResult result = bv.Validate(p);
+            if (result.IsValid)
+            {
+                p.BlogStatus = true;
+                p.BlogCreateDate = DateTime.Parse(DateTime.Now.ToShortDateString());
+                p.WriterID = 1; //düzenle
+                bm.Add(p);
+                return RedirectToAction("BlogListByWriter", "Blog");
+            }
+            else
+            {
+                foreach (var item in result.Errors)
+                {
+                    ModelState.AddModelError(item.PropertyName, item.ErrorMessage);
+                }
+            }
+            return View();
         }
     }
 }

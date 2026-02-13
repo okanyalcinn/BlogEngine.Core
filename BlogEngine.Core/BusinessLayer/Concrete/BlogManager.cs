@@ -18,12 +18,12 @@ namespace BusinessLayer.Concrete
             _blogDal = blogDal;
         }
 
-        public void Add(Blog blog)
+        public void Add(Blog t)
         {
-            throw new NotImplementedException();
+            _blogDal.Insert(t);
         }
 
-        public void Delete(Blog blog)
+        public void Delete(Blog t)
         {
             throw new NotImplementedException();
         }
@@ -53,7 +53,7 @@ namespace BusinessLayer.Concrete
             return _blogDal.GetListAll().OrderByDescending(x => x.BlogCreateDate).Take(3).ToList();
         }
 
-        public void Update(Blog blog)
+        public void Update(Blog t)
         {
             throw new NotImplementedException();
         }
