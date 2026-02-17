@@ -5,6 +5,10 @@
     Layout = "~/Views/Shared/WriterLayout.cshtml";
 }
 
+<script src="~/lib/jquery/dist/jquery.js"></script>
+
+<script src="~/js/sweetalert2@11.js"></script>
+
 <h1>Yazarın Blogları</h1>
 <table class="table table-bordered">
     <tr>
@@ -19,15 +23,44 @@
     @foreach (var item in Model)
     {
         <tr>
-            <td>@item.BlogID</td>
+            <th>@item.BlogID</th>
             <td>@item.BlogTitle</td>
-            <td>@item.BlogCreateDate</td>
-            <td>@item.CategoryID</td>
-            <td>@item.BlogStatus</td>
-            <td><a hreh="#" class="btn btn-danger">Sil</a></td>
-            <td><a hreh="#" class="btn btn-warning">Düzenle</a></td>
+            <td>@(((DateTime)item.BlogCreateDate).ToString("dd-MMM-yyyy"))</td>
+            <td>@item.Category.CategoryName</td>
+            <td>@(item.BlogStatus == true ? "Aktif" : "Pasif")</td>
+            <td><a href="#" onclick="return DeleteBlog(this, @item.BlogID)" class="btn btn-danger">Sil</a></td>
+            <td><a href="/Blog/BlogEdit/@item.BlogID" class="btn btn-warning">Düzenle</a></td>
         </tr>
     }
 </table>
 
-<a href="#" class="btn btn-primary">Yeni Blog Oluştur</a>
+<a href="/Blog/BlogAdd/" class="btn btn-primary">Yeni Blog Oluştur</a>
+
+<script type="text/javascript">
+    function DeleteBlog(element, id){
+        //element.preventDefault(); // Direkt gitmesini engeller
+
+        Swal.fire({
+          title: "Silmek İstediğinize Emin Misiniz?",
+          text: "Onaylarsanız blog silinecektir.",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Evet Silmek İstiyorum",
+          cancelButtonText: "Hayır"
+        }).then((result) => {
+          if (result.isConfirmed) {
+            Swal.fire({
+              title: "Silindi!",
+              text: "Seçtiğiniz Blog Silindi.",
+              icon: "success"
+            }).then((result) =>{
+                 window.location.href = "/Blog/BlogDelete/"+ id;
+            })
+          }
+        });
+
+        return false; // Linkin normal çalışmasını tamamen engeller
+    }
+</script>

@@ -5,6 +5,10 @@
     Layout = "~/Views/Shared/WriterLayout.cshtml";
 }
 
+<script src="~/lib/jquery/dist/jquery.js"></script>
+
+<script src="~/js/sweetalert2@11.js"></script>
+
 <h1>Yeni Blog Oluşturma</h1>
 <br />
 @using (Html.BeginForm("BlogAdd", "Blog", FormMethod.Post))
@@ -21,12 +25,23 @@
     @Html.TextBoxFor(x => x.BlogThumbnailImage, new { @class = "form-control" })
     <br />
     @Html.Label("Kategori")
-    @Html.TextBoxFor(x => x.CategoryID, new { @class = "form-control" })
+    @Html.DropDownListFor(x => x.CategoryID, (List<SelectListItem>)ViewBag.cv, "Kategori Seçiniz", new { @class = "form-control" })
     <br />
     @Html.Label("Blog İçeriği")
     @Html.TextAreaFor(x => x.BlogContent, 50, 3, new { @class = "form-control" })
-    @Html.ValidationMessageFor(x=> x.BlogContent)
+    @Html.ValidationMessageFor(x => x.BlogContent)
     <br />
     <button class="btn btn-info">Kaydet</button>
 }
 
+<script type="text/javascript">
+        function UpdatedMessage(){
+            Swal.fire({
+              position: "top-end",
+              icon: "success",
+              title: "Başarıyla Eklendi",
+              showConfirmButton: false,
+              timer: 1500
+            });
+        }
+</script>
