@@ -1,14 +1,20 @@
 ﻿using BusinessLayer.Concrete;
 using DataAccessLayer.EntityFramework;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BlogEngine.Core.ViewComponents.Writer
+namespace BlogEngine.Core.Controllers
 {
-    public class WriterNotification : ViewComponent
+    public class NotificationController : Controller
     {
         NotificationManager nm = new NotificationManager(new EfNotificationRepository());
+        public IActionResult Index()
+        {
+            return View();
+        }
 
-        public IViewComponentResult Invoke()
+        [AllowAnonymous]
+        public IActionResult AllNotification()
         {
             var values = nm.GetList();
             return View(values);
