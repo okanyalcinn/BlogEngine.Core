@@ -6,12 +6,11 @@ namespace BlogEngine.Core.ViewComponents.Writer
 {
     public class WriterMessageNotification : ViewComponent
     {
-        MessageManager mm = new MessageManager(new EfMessageRepository());
+        Message2Manager mm = new Message2Manager(new EfMessage2Repository());
         public IViewComponentResult Invoke()
         {
-            string p;
-            p = "yalcinokann@gmail.com";
-            var values = mm.GetInBoxListByWriter(p);
+            int id = 1;
+            var values = mm.GetInBoxListByWriter(id);
             return View(values);
         }
     }

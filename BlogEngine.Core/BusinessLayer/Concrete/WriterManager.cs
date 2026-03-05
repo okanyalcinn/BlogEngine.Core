@@ -1,6 +1,7 @@
 ﻿using BusinessLayer.Abstract;
 using DataAccessLayer.Abstract;
 using EntityLayer.Concrete;
+using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,6 +42,11 @@ namespace BusinessLayer.Concrete
         public List<Writer> GetWriterById(int id)
         {
             return _writerDal.GetListAll(x => x.WriterID == id);
+        }
+
+        public int GetWriterIdByEmail(string mail)
+        {
+            return _writerDal.GetListAll(x => x.WriterMail == mail).Select(x=> x.WriterID).FirstOrDefault();
         }
 
         public void Update(Writer t)

@@ -1,5 +1,6 @@
 ﻿using BusinessLayer.Concrete;
 using BusinessLayer.ValidationRules;
+using DataAccessLayer.Concrete;
 using DataAccessLayer.EntityFramework;
 using EntityLayer.Concrete;
 using FluentValidation.Results;
@@ -10,11 +11,11 @@ using Microsoft.VisualBasic;
 
 namespace BlogEngine.Core.Controllers
 {
-    [AllowAnonymous]
     public class BlogController : Controller
     {
         BlogManager bm = new BlogManager(new EfBlogRepository());
         CategoryManager cm = new CategoryManager(new EfCategoryRepository());
+        WriterManager wm = new WriterManager(new EfWriterRepository());
         public IActionResult Index()
         {
             var values = bm.GetBlogListWithCategory();
@@ -30,7 +31,8 @@ namespace BlogEngine.Core.Controllers
 
         public IActionResult BlogListByWriter()
         {
-            var values = bm.GetListWithCategoryByWriter(1);
+            var writerID = wm.GetWriterIdByEmail(User.Identity.Name);
+            var values = bm.GetListWithCategoryByWriter(writerID);
             return View(values);
         }
 
@@ -56,7 +58,7 @@ namespace BlogEngine.Core.Controllers
             {
                 p.BlogStatus = true;
                 p.BlogCreateDate = DateTime.Parse(DateTime.Now.ToShortDateString());
-                p.WriterID = 1; //düzenle
+                p.WriterID = wm.GetWriterIdByEmail(User.Identity.Name);
                 bm.Add(p);
                 return RedirectToAction("BlogListByWriter", "Blog");
             }
@@ -94,7 +96,6 @@ namespace BlogEngine.Core.Controllers
         [HttpPost]
         public IActionResult BlogEdit(Blog p)
         {
-            p.WriterID = 1;
             p.BlogCreateDate = DateTime.Parse(DateTime.Now.ToShortDateString());
             bm.Update(p);
             return RedirectToAction("BlogListByWriter");

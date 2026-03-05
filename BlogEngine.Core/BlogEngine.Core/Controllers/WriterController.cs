@@ -1,6 +1,7 @@
 ﻿using BlogEngine.Core.Models;
 using BusinessLayer.Concrete;
 using BusinessLayer.ValidationRules;
+using DataAccessLayer.Concrete;
 using DataAccessLayer.EntityFramework;
 using EntityLayer.Concrete;
 using FluentValidation;
@@ -17,6 +18,11 @@ namespace BlogEngine.Core.Controllers
         WriterManager wm = new WriterManager(new EfWriterRepository());
         public IActionResult Index()
         {
+            var userMail = User.Identity.Name;
+            ViewBag.UserMail = userMail;
+            Context c = new Context();
+            var writerName = c.Writers.Where(x => x.WriterMail == userMail).Select(x => x.WriterName).FirstOrDefault();
+            ViewBag.WriterName = writerName;
             return View();
         }
 
@@ -30,33 +36,29 @@ namespace BlogEngine.Core.Controllers
             return View();
         }
 
-        [AllowAnonymous]
         public IActionResult Test()
         {
             return View();
         }
 
-        [AllowAnonymous]
         public PartialViewResult WriterNavbarPartial()
         {
             return PartialView();
         }
 
-        [AllowAnonymous]
         public PartialViewResult WriterFooterPartial()
         {
             return PartialView();
         }
 
-        [AllowAnonymous]
         [HttpGet]
         public IActionResult WriterEditProfile()
         {
-            var writerValues = wm.GetById(1);
+            var writerID = wm.GetWriterIdByEmail(User.Identity.Name);
+            var writerValues = wm.GetById(writerID);
             return View(writerValues);
         }
 
-        [AllowAnonymous]
         [HttpPost]
         public IActionResult WriterEditProfile(Writer p)
         {
@@ -88,14 +90,12 @@ namespace BlogEngine.Core.Controllers
             return View();
         }
 
-        [AllowAnonymous]
         [HttpGet]
         public IActionResult WriterAdd()
         {
             return View();
         }
 
-        [AllowAnonymous]
         [HttpPost]
         public IActionResult WriterAdd(AddProfileImage p)
         {

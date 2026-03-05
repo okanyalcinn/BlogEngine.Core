@@ -1,0 +1,63 @@
+﻿@using EntityLayer.Concrete
+@model List<Message2>
+@{
+    ViewData["Title"] = "InBox";
+    Layout = "~/Views/Shared/WriterLayout.cshtml";
+}
+
+<script src="~/lib/jquery/dist/jquery.js"></script>
+
+<script src="~/js/sweetalert2@11.js"></script>
+
+<h1>Gelen Kutusu</h1>
+<table class="table table-bordered">
+    <tr>
+        <th>#</th>
+        <th>Konu</th>
+        <th>Gönderen</th>
+        <th>Tarih</th>
+        <th>Mesajı Aç</th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <th>@item.MessageID</th>
+            <td>@item.Subject</td>
+            <td>@item.SenderUser.WriterName</td>
+            <td>@(((DateTime)item.MessageDate).ToString("dd-MMM-yyyy"))</td>
+            <td><a href="/Message/MessageDetails/@item.MessageID" class="btn btn-warning">Mesajı Aç</a></td>
+            @* <td><a href="#" onclick="return DeleteBlog(this, @item.MessageID)" class="btn btn-danger">Sil</a></td> *@
+        </tr>
+    }
+</table>
+
+<a href="/Blog/BlogAdd/" class="btn btn-primary">Yeni Mesaj Oluştur</a>
+
+<script type="text/javascript">
+    function DeleteBlog(element, id){
+        //element.preventDefault(); // Direkt gitmesini engeller
+
+        Swal.fire({
+          title: "Silmek İstediğinize Emin Misiniz?",
+          text: "Onaylarsanız blog silinecektir.",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Evet Silmek İstiyorum",
+          cancelButtonText: "Hayır"
+        }).then((result) => {
+          if (result.isConfirmed) {
+            Swal.fire({
+              title: "Silindi!",
+              text: "Seçtiğiniz Blog Silindi.",
+              icon: "success"
+            }).then((result) =>{
+                 window.location.href = "/Blog/BlogDelete/"+ id;
+            })
+          }
+        });
+
+        return false; // Linkin normal çalışmasını tamamen engeller
+    }
+</script>

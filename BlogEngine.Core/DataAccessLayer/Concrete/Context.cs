@@ -14,6 +14,41 @@ namespace DataAccessLayer.Concrete
         {
             optionsBuilder.UseSqlServer("server=.\\SQLEXPRESS;database=BlogEngineConreDb; Integrated Security=True;TrustServerCertificate=True;");
         }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Match>()
+                .HasOne(x => x.HomeTeam)
+                .WithMany(y => y.HomeMatches)
+                .HasForeignKey(z => z.HomeTeamID)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
+            modelBuilder.Entity<Match>()
+                .HasOne(x => x.GuestTeam)
+                .WithMany(x => x.AwayMatches)
+                .HasForeignKey(x => x.GuestTeamID)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
+
+            modelBuilder.Entity<Message2>()
+                .HasOne(x=> x.SenderUser)
+                .WithMany(x=> x.WriterSender)
+                .HasForeignKey(x=> x.SenderID)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
+            modelBuilder.Entity<Message2>()
+                .HasOne(x => x.ReceiverUser)
+                .WithMany(x => x.WriterReceiver)
+                .HasForeignKey(x => x.ReceiverID)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
+            //HomeMatches --> writerSender
+            //AwayMatches --> writerReceiver
+
+            //HomeTeam   -->    SenderUser 
+            //GuestTeam  -->    ReceiverUser
+        }
+
         public DbSet<About> Abouts { get; set; }
         public DbSet<Blog> Blogs { get; set; }
         public DbSet<Category> Categories { get; set; }
@@ -24,6 +59,9 @@ namespace DataAccessLayer.Concrete
         public DbSet<BlogRayting> BlogRaytings { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<Message> Messages { get; set; }
+        public DbSet<Team> Teams { get; set; }
+        public DbSet<Match> Matches { get; set; }
+        public DbSet<Message2> Message2s { get; set; }
 
     }
 }
